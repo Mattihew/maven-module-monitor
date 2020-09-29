@@ -7,10 +7,12 @@ declare -a changes
 
 searchDir=${1:-.}
 
-while read f; do
-    IFS=":" read dir ck <<< "${f}"
-    fileModules["${dir}"]="${ck}"
-done <.m3cache
+if [ -f .m3cache ]; then
+    while read f; do
+        IFS=":" read dir ck <<< "${f}"
+        fileModules["${dir}"]="${ck}"
+    done <.m3cache
+fi
 
 for D in ${searchDir}/*/; do
     ck=$(find ${D} -type f -print0 | sort -z | xargs -0 cksum | awk '{print $1;}' | cksum | awk '{print $1;}')
