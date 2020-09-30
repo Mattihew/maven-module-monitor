@@ -6,6 +6,7 @@ declare -A fileModules
 declare -a changes
 
 searchDir=${1:-.}
+shift
 
 if [ -f .m3cache ]; then
     while read f; do
@@ -27,6 +28,14 @@ for key in ${!hashModules[@]}; do
     echo ${key}:${hashModules[${key}]} >> .m3cache
 done
 
+plArg=""
 for key in ${!changes[@]}; do
-    echo ${changes[$key]}
+    plArg+=",${changes[$key]}"
 done
+
+argString=""
+for a in $*; do
+	argString+=" $a"
+done
+
+mvn -pl ${plArg:1} -amd ${argString:1}
